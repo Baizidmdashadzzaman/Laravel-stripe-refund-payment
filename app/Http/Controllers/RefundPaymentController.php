@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Stripe\Stripe;
 use Stripe\Charge;
 use Stripe\Refund;
+use Stripe\PaymentIntent;
+
 use Illuminate\Http\Request;
 
 class RefundPaymentController extends Controller
@@ -56,4 +58,34 @@ class RefundPaymentController extends Controller
             return back()->with('error', 'Refund failed: ' . $e->getMessage());
         }
     }
+
+
+public function refund_via_paymentid($paymentId)
+{
+    Stripe::setApiKey(env('STRIPE_SECRET'));
+
+    try {
+        $paymentIntent = PaymentIntent::retrieve($paymentId);
+
+        // Check if latest_charge is present
+        if (empty($paymentIntent->latest_charge)) {
+            return back()->with('error', 'No charge found in this PaymentIntent.');
+        }
+
+        $chargeId = $paymentIntent->latest_charge;
+
+        Refund::create([
+            'charge' => $chargeId,
+            // 'amount' => 5000, // optional: for partial refund
+        ]);
+
+        return back()->with('success', 'Refund successful via PaymentIntent ID.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Refund failed: ' . $e->getMessage());
+    }
+}
+
+
+
+
 }

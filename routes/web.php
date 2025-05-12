@@ -15,6 +15,7 @@ Route::get('/', function () {
 
 Route::get('/payments', [RefundPaymentController::class, 'index'])->name('payments.index');
 Route::post('/payments/refund/{chargeId}', [RefundPaymentController::class, 'refund'])->name('payments.refund');
+Route::post('/payments/refund-by-payment/{paymentId}', [RefundPaymentController::class, 'refund_via_paymentid'])->name('payments.refund_by_payment');
 
 
 Route::get('/subscribe', [SubscriptionController::class, 'show'])->name('subscribe.show');

@@ -26,7 +26,8 @@
                         <th>Amount</th>
                         <th>Status</th>
                         <th>Created</th>
-                        <th>Refund</th>
+                        <th>Refund (Charge ID)</th>
+                        <th>Refund (PaymentIntent ID)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,6 +46,18 @@
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-danger">Refund</button>
                                     </form>
+                                @endif
+                            </td>
+                            <td>
+                                @if(!empty($payment->payment_intent) && !$payment->refunded)
+                                    <form action="{{ route('payments.refund_by_payment', $payment->payment_intent) }}" method="POST" onsubmit="return confirm('Refund via PaymentIntent?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-warning">Refund</button>
+                                    </form>
+                                @elseif($payment->refunded)
+                                    <span class="badge badge-secondary">Already Refunded</span>
+                                @else
+                                    <span class="badge badge-light">N/A</span>
                                 @endif
                             </td>
                         </tr>
