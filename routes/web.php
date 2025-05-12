@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\{
+    SubscriptionController,RefundPaymentController
+};
 
 Route::get('/', function () {
     return view('welcome');
@@ -10,6 +12,9 @@ Route::get('/', function () {
 
 // Route::get('/subscribe', [SubscriptionController::class, 'showForm']);
 // Route::post('/subscribe', [SubscriptionController::class, 'processSubscription']);
+
+Route::get('/payments', [RefundPaymentController::class, 'index'])->name('payments.index');
+Route::post('/payments/refund/{chargeId}', [RefundPaymentController::class, 'refund'])->name('payments.refund');
 
 
 Route::get('/subscribe', [SubscriptionController::class, 'show'])->name('subscribe.show');
